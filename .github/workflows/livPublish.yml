@@ -15,7 +15,6 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.MFE_AWS_SECRET_ACCESS_KEY }}
       AWS_BUCKET_NAME: ${{secrets.AWS_BUCKET_NAME}}
       AWS_DEFAULT_REGION: ${{secrets.AWS_DEFAULT_REGION}}
-    container: node:12.19
     steps:
       - name: Python pkg setup and codeartifact login 
         run: |
@@ -27,30 +26,27 @@ jobs:
         uses: actions/checkout@v3  
         with:
           path: ${{ github.workspace }}
-      - name : NPM install
-        run: npm i
-      - name: Run  Unit Test case 
-        run: npm run test
-      - name: Package Bundle
-        run : npm run bundle
+      - name: Use 16 Node version
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+      - name : Install npm pkg
+        run: npm install
+      - name: Package Build
+        run : npm run build
       - name: Set package.json version as $GITHUB_ENV
         run: |
           echo 'PACKAGE_JSON<<EOF' >> $GITHUB_ENV
           cat ./package.json >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV 
-      - name: SEMANTIC_VERSION setup and mv command
-        env: 
-          PACKAGE_VERSION: '${{ fromJson(env.PACKAGE_JSON).version }}' 
-        run : |
-          echo $PACKAGE_VERSION
-          mv dist $PACKAGE_VERSION  
-      - name: S3 deploy 
+          echo 'EOF' >> $GITHUB_ENV
+      - name: Publish 
         env: 
           PACKAGE_VERSION: '${{ fromJson(env.PACKAGE_JSON).version }}' 
         run: |
           echo "${GITHUB_REF#refs/heads/}"
           aws configure list
-          aws s3 sync ./$PACKAGE_VERSION s3://${{secrets.AWS_BUCKET_NAME}}/material${GITHUB_REF#refs/heads}/$PACKAGE_VERSION/
+           
       
     
       

@@ -6,7 +6,7 @@ Components with the <sl-badge variant="warning" pill>Experimental</sl-badge> bad
 
 New versions of Shoelace are released as-needed and generally occur when a critical mass of changes have accumulated. At any time, you can see what's coming in the next release by visiting [next.shoelace.style](https://next.shoelace.style).
 
-_During the beta period, these restrictions may be relaxed in the event of a mission-critical bug._ 🐛
+?> During the beta period, these restrictions may be relaxed in the event of a mission-critical bug. 🐛
 
 ## Next
 
@@ -24,6 +24,8 @@ _During the beta period, these restrictions may be relaxed in the event of a mis
 - Added `focus()` and `blur()` methods to `<sl-radio-button>`
 - Added the `handle-icon` part to `<sl-image-comparer>`
 - Added `caret`, `check`, `grip-vertical`, `indeterminate`, and `radio` icons to the system library and removed `check-lg` [#985](https://github.com/shoelace-style/shoelace/issues/985)
+- Added the `loading` attribute to `<sl-avatar>` to allow lazy loading of image avatars [#1006](https://github.com/shoelace-style/shoelace/pull/1006)
+- Added `exports` to `package.json` and removed the `main` and `module` properties [#1007](https://github.com/shoelace-style/shoelace/pull/1007)
 - Fixed a bug in `<sl-card>` that prevented the border radius to apply correctly to the header [#934](https://github.com/shoelace-style/shoelace/pull/934)
 - Fixed a bug in `<sl-button-group>` where the inner border disappeared on focus [#980](https://github.com/shoelace-style/shoelace/pull/980)
 - Fixed a bug that caused prefix/suffix animations in `<sl-input>` to wobble [#996](https://github.com/shoelace-style/shoelace/issues/996)
@@ -36,10 +38,22 @@ _During the beta period, these restrictions may be relaxed in the event of a mis
 - Fixed a bug in `<sl-tree>` that prevented selections from working correctly on dynamically added tree items [#963](https://github.com/shoelace-style/shoelace/issues/963)
 - Fixed module paths in `custom-elements.json` so they point to the dist file instead of the source file [#725](https://github.com/shoelace-style/shoelace/issues/725)
 - Improved `<sl-badge>` to improve padding and render relative to the current font size
+- Improved how many components display in forced-colors mode / Windows High Contrast mode
+  - Improved `<sl-color-picker>` so it's usable in forced-colors mode
+  - Improved `<sl-dialog>` and `<sl-drawer>` so the panel is more visible in forced-colors mode
+  - Improved `<sl-menu-item>` so selections are visible in forced-colors mode
+  - Improved `<sl-progress-bar>` so it's visible in forced-colors mode
+  - Improved `<sl-radio-button>` so checked states are visible in forced-colors mode
+  - Improved `<sl-range>` so the thumb, track, and tooltips are visible in forced-colors mode
+  - Improved `<sl-rating>` so icons are visible in forced-colors mode
+  - Improved `<sl-split-panel>` so the divider is visible in forced-colors mode
+  - Improved `<sl-tree-item>` so selected items are visible in forced-colors mode
+  - Improved `<sl-tab-group>` so tabs are cleaner and easier to understand in forced-colors mode
 - Moved all component descriptions to `@summary` to get them within documentation tools [#962](https://github.com/shoelace-style/shoelace/pull/962)
 - Updated Lit to 2.4.1
+- Updated Bootstrap Icons to 1.10.2
 - Updated TypeScript to 4.8.4
-- Updated esbuild to 0.15.13
+- Updated esbuild to 0.15.14
 - Updated all other dependencies to latest versions
 
 ## 2.0.0-beta.83

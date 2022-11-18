@@ -40,13 +40,13 @@ jobs:
           apt-get update && apt-get install -y python3-pip
           pip3 install -U awscli
           aws --version
-          aws codeartifact login --tool npm --repository livspace_npm_group --domain livspace-private 
+          aws codeartifact login --tool npm --repository livspace_npm_private --domain livspace-private
       - name: Publish 
         env: 
           PACKAGE_VERSION: '${{ fromJson(env.PACKAGE_JSON).version }}' 
         run: |
           echo "${GITHUB_REF#refs/heads/}"
-          aws configure list
+          npm publish
            
       
     

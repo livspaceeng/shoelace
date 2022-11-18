@@ -1,7 +1,7 @@
 {
   "name": "@shoelace-style/shoelace",
   "description": "A forward-thinking library of web components.",
-  "version": "2.0.0-beta.83",
+  "version": "2.0.0-beta.83.liv.1",
   "homepage": "https://github.com/shoelace-style/shoelace",
   "author": "Cory LaViska",
   "license": "MIT",
@@ -33,7 +33,7 @@
   "scripts": {
     "start": "node scripts/build.js --bundle --serve",
     "build": "node scripts/build.js --bundle --types --copydir \"docs/dist\"",
-    "verify": "npm run prettier:check && npm run lint && npm run build",
+    "verify": "npm run prettier:check && npm run lint && npm run build && npm run livmodify",
     "prepublishOnly": "npm run verify",
     "prettier": "prettier --write --loglevel warn .",
     "prettier:check": "prettier --check --loglevel warn .",
@@ -46,7 +46,8 @@
     "test:watch": "web-test-runner --watch",
     "spellcheck": "cspell \"**/*.{js,ts,json,html,css,md}\" --no-progress",
     "list-outdated-dependencies": "npm-check-updates --format repo --peer",
-    "update-dependencies": "npm-check-updates --peer -u && npm install && npm run lint:fix && npm run prettier && npm run verify"
+    "update-dependencies": "npm-check-updates --peer -u && npm install && npm run lint:fix && npm run prettier && npm run verify",
+    "livmodify": "node scripts/liv-modify.js"
   },
   "engines": {
     "node": ">=14.17.0"
@@ -103,6 +104,7 @@
     "prettier": "^2.7.1",
     "react": "^18.2.0",
     "recursive-copy": "^2.0.14",
+    "replace-in-file": "^6.3.5",
     "sinon": "^14.0.1",
     "strip-css-comments": "^5.0.0",
     "tslib": "^2.4.1",

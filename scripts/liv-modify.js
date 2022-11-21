@@ -13,18 +13,18 @@ try {
   console.error('Error occurred:', error);
 }
 
-const options1 = {
-  files: './src/**/*',
-  from: /Sl/g,
-  to: 'Liv'
-};
+// const options1 = {
+//   files: './src/**/*',
+//   from: /Sl/g,
+//   to: 'Liv'
+// };
 
-try {
-  const results1 = await replace(options1);
-  console.log('Replacement results:', results1);
-} catch (error) {
-  console.error('Error occurred:', error);
-}
+// try {
+//   const results1 = await replace(options1);
+//   console.log('Replacement results:', results1);
+// } catch (error) {
+//   console.error('Error occurred:', error);
+// }
 
 const options2 = {
   files: './docs/**/*',
@@ -40,7 +40,7 @@ try {
 }
 
 const options3 = {
-  files: './docs/**/*',
+  files: './src/shoelace.ts',
   from: /Sl/g,
   to: 'Liv'
 };

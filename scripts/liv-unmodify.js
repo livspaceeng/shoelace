@@ -2,8 +2,8 @@ import replace from 'replace-in-file';
  
 const options = {
   files: './src/shoelace.ts',
-  from: /Sl/g,
-  to: 'Liv'
+  from: /Liv/g,
+  to: 'Sl'
 };
 
 try {

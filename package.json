@@ -1,7 +1,7 @@
 {
-  "name": "@shoelace-style/shoelace",
+  "name": "@shoelace/livspace",
   "description": "A forward-thinking library of web components.",
-  "version": "2.0.0-beta.83.liv.1",
+  "version": "2.0.0-beta.83.liv.2",
   "homepage": "https://github.com/shoelace-style/shoelace",
   "author": "Cory LaViska",
   "license": "MIT",
@@ -37,8 +37,8 @@
   "scripts": {
     "start": "node scripts/build.js --bundle --serve",
     "build": "node scripts/build.js --bundle --types --copydir \"docs/dist\"",
-    "verify": "npm run prettier:check && npm run lint && npm run build && npm run livmodify",
-    "prepublishOnly": "npm run verify",
+    "verify": "npm run prettier:check && npm run lint && && npm run build",
+    "prepublishOnly": "npm run livmodify && npm run verify",
     "prettier": "prettier --write --loglevel warn .",
     "prettier:check": "prettier --check --loglevel warn .",
     "lint": "eslint src --max-warnings 0",
@@ -51,7 +51,9 @@
     "spellcheck": "cspell \"**/*.{js,ts,json,html,css,md}\" --no-progress",
     "list-outdated-dependencies": "npm-check-updates --format repo --peer",
     "update-dependencies": "npm-check-updates --peer -u && npm install && npm run lint:fix && npm run prettier && npm run verify",
-    "livmodify": "node scripts/liv-modify.js"
+    "livmodify": "node scripts/liv-modify.js",
+    "livunmodify": "node scripts/liv-unmodify.js",
+    "postpublish": "npm run livunmodify"
   },
   "engines": {
     "node": ">=14.17.0"

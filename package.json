@@ -51,7 +51,7 @@
     "spellcheck": "cspell \"**/*.{js,ts,json,html,css,md}\" --no-progress",
     "list-outdated-dependencies": "npm-check-updates --format repo --peer",
     "update-dependencies": "npm-check-updates --peer -u && npm install && npm run lint:fix && npm run prettier && npm run verify",
-    "livmodify": "node scripts/liv-modify.js"
+    "livmodify": "node scripts/liv-modify.js && npm run prettier"
   },
   "engines": {
     "node": ">=14.17.0"

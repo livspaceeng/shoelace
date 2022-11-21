@@ -28,8 +28,6 @@ jobs:
           cache: 'npm'
       - name : Install npm pkg
         run: npm install
-      - name: Package Build
-        run : npm run build
       - name: Set package.json version as $GITHUB_ENV
         run: |
           echo 'PACKAGE_JSON<<EOF' >> $GITHUB_ENV

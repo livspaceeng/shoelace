@@ -1,5 +1,5 @@
 import replace from 'replace-in-file';
- 
+
 const options = {
   files: './src/shoelace.ts',
   from: /Liv/g,

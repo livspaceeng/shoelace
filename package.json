@@ -1,7 +1,7 @@
 {
   "name": "@shoelace/livspace",
   "description": "A forward-thinking library of web components.",
-  "version": "2.0.0-beta.83.liv.2",
+  "version": "2.0.0-beta.83.liv.3",
   "homepage": "https://github.com/shoelace-style/shoelace",
   "author": "Cory LaViska",
   "license": "MIT",
@@ -51,9 +51,7 @@
     "spellcheck": "cspell \"**/*.{js,ts,json,html,css,md}\" --no-progress",
     "list-outdated-dependencies": "npm-check-updates --format repo --peer",
     "update-dependencies": "npm-check-updates --peer -u && npm install && npm run lint:fix && npm run prettier && npm run verify",
-    "livmodify": "node scripts/liv-modify.js",
-    "livunmodify": "node scripts/liv-unmodify.js",
-    "postpublish": "npm run livunmodify"
+    "livmodify": "node scripts/liv-modify.js"
   },
   "engines": {
     "node": ">=14.17.0"

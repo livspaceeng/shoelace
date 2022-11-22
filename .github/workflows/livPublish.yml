@@ -10,9 +10,9 @@ on:
 jobs:
   container:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
+    # strategy:
+    #   matrix:
+    #     node-version: [16.x, 18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.MFE_AWS_ACCESS_KEY_ID }}
@@ -25,15 +25,17 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-      - run: npx playwright install-deps 
+          node-version: 16
+      # - run: npx playwright install-deps
+      - run: npm config set registry https://registry.npmjs.com/
+      - run: npm install
       - name: Python pkg setup and codeartifact login 
         run: |
           apt-get update && apt-get install -y python3-pip
           pip3 install -U awscli
           aws --version
           aws codeartifact login --tool npm --repository livspace_npm_private --domain livspace-private
-      - run: npm install
+      # - run: npm install
       - name: Set package.json version as $GITHUB_ENV
         run: |
           echo 'PACKAGE_JSON<<EOF' >> $GITHUB_ENV

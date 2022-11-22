@@ -16,7 +16,12 @@ jobs:
       AWS_BUCKET_NAME: ${{secrets.AWS_BUCKET_NAME}}
       AWS_DEFAULT_REGION: ${{secrets.AWS_DEFAULT_REGION}}
     steps:
-      
+      - name: Python pkg setup and codeartifact login 
+        run: |
+          apt-get update && apt-get install -y python3-pip
+          pip3 install -U awscli
+          aws --version
+          aws codeartifact login --tool npm --repository livspace_npm_private --domain livspace-private
       - name: Check out repository code
         uses: actions/checkout@v3  
         with:
@@ -24,7 +29,8 @@ jobs:
       - name: Use 16 Node version
         uses: actions/setup-node@v3
         with:
-          node-version: 16.18.1
+          node-version: 16
+          cache: 'npm'
       - name : Install npm pkg
         run: npm install
       - name: Set package.json version as $GITHUB_ENV
@@ -32,12 +38,6 @@ jobs:
           echo 'PACKAGE_JSON<<EOF' >> $GITHUB_ENV
           cat ./package.json >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
-      - name: Python pkg setup and codeartifact login 
-        run: |
-          apt-get update && apt-get install -y python3-pip
-          pip3 install -U awscli
-          aws --version
-          aws codeartifact login --tool npm --repository livspace_npm_private --domain livspace-private
       - name: Publish 
         env: 
           PACKAGE_VERSION: '${{ fromJson(env.PACKAGE_JSON).version }}' 

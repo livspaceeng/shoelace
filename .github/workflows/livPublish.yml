@@ -10,6 +10,10 @@ on:
 jobs:
   container:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.MFE_AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.MFE_AWS_SECRET_ACCESS_KEY }}
@@ -22,17 +26,14 @@ jobs:
           pip3 install -U awscli
           aws --version
           aws codeartifact login --tool npm --repository livspace_npm_private --domain livspace-private
-      - name: Check out repository code
-        uses: actions/checkout@v3  
-        with:
-          path: ${{ github.workspace }}
-      - name: Use 16 Node version
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      - name : Install npm pkg
-        run: npm install
+      - run: npx playwright install-deps
+      - run: npm ci
       - name: Set package.json version as $GITHUB_ENV
         run: |
           echo 'PACKAGE_JSON<<EOF' >> $GITHUB_ENV

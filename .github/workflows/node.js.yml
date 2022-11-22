@@ -26,5 +26,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - run: npx playwright install-deps
-      - run: npm ci
+      - run: npm config set registry https://registry.npmjs.com/
+      - run: npm i
       - run: npm run verify

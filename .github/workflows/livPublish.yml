@@ -20,18 +20,20 @@ jobs:
       AWS_BUCKET_NAME: ${{secrets.AWS_BUCKET_NAME}}
       AWS_DEFAULT_REGION: ${{secrets.AWS_DEFAULT_REGION}}
     steps:
-      # - name: Python pkg setup and codeartifact login 
-      #   run: |
-      #     apt-get update && apt-get install -y python3-pip
-      #     pip3 install -U awscli
-      #     aws --version
-      #     aws codeartifact login --tool npm --repository livspace_npm_private --domain livspace-private
+     
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - run: npx playwright@1.19.2 install-deps
+      - name: Python pkg setup and codeartifact login 
+        run: |
+          apt-get update && apt-get install -y python3-pip
+          pip3 install -U awscli
+          aws --version
+          aws codeartifact login --tool npm --repository livspace_npm_private --domain livspace-private
+      - run: npm ci
       - name: Set package.json version as $GITHUB_ENV
         run: |
           echo 'PACKAGE_JSON<<EOF' >> $GITHUB_ENV

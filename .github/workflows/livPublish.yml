@@ -27,6 +27,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npx playwright install-deps
+      - run: npm cache clean -f
       - run: npm config set registry https://registry.npmjs.com/
       - run: npm i
       - name: Python pkg setup and codeartifact login 
@@ -35,7 +36,6 @@ jobs:
           pip3 install -U awscli
           aws --version
           aws codeartifact login --tool npm --repository livspace_npm_private --domain livspace-private
-      - run: npm install
       - name: Set package.json version as $GITHUB_ENV
         run: |
           echo 'PACKAGE_JSON<<EOF' >> $GITHUB_ENV

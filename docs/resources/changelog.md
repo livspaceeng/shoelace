@@ -32,9 +32,12 @@ New versions of Shoelace are released as-needed and generally occur when a criti
 - Added `--sl-input-required-content-color` custom property to all form controls [#948](https://github.com/shoelace-style/shoelace/pull/948)
 - Added the ability to cancel `sl-show` and `sl-hide` events in `<sl-details>` [#993](https://github.com/shoelace-style/shoelace/issues/993)
 - Added `focus()` and `blur()` methods to `<sl-radio-button>`
+- Added `stepUp()` and `stepDown()` methods to `<sl-input>` and `<sl-range>` [#1013](https://github.com/shoelace-style/shoelace/pull/1013)
+- Added `showPicker()` method to `<sl-input>` [#1013](https://github.com/shoelace-style/shoelace/pull/1013)
 - Added the `handle-icon` part to `<sl-image-comparer>`
 - Added `caret`, `check`, `grip-vertical`, `indeterminate`, and `radio` icons to the system library and removed `check-lg` [#985](https://github.com/shoelace-style/shoelace/issues/985)
 - Added the `loading` attribute to `<sl-avatar>` to allow lazy loading of image avatars [#1006](https://github.com/shoelace-style/shoelace/pull/1006)
+- Added `formenctype` attribute to `<sl-button>` [#1009](https://github.com/shoelace-style/shoelace/pull/1009)
 - Added `exports` to `package.json` and removed the `main` and `module` properties [#1007](https://github.com/shoelace-style/shoelace/pull/1007)
 - Fixed a bug in `<sl-card>` that prevented the border radius to apply correctly to the header [#934](https://github.com/shoelace-style/shoelace/pull/934)
 - Fixed a bug in `<sl-button-group>` where the inner border disappeared on focus [#980](https://github.com/shoelace-style/shoelace/pull/980)
@@ -60,6 +63,7 @@ New versions of Shoelace are released as-needed and generally occur when a criti
   - Improved `<sl-split-panel>` so the divider is visible in forced-colors mode
   - Improved `<sl-tree-item>` so selected items are visible in forced-colors mode
   - Improved `<sl-tab-group>` so tabs are cleaner and easier to understand in forced-colors mode
+- Improved positioning of the menu in `<sl-select>` so you can customize the menu width [#1018](https://github.com/shoelace-style/shoelace/issues/1018)
 - Moved all component descriptions to `@summary` to get them within documentation tools [#962](https://github.com/shoelace-style/shoelace/pull/962)
 - Refactored form controls to use the `ShoelaceFormControl` interface to improve type safety and consistency
 - Updated Lit to 2.4.1
@@ -478,7 +482,7 @@ Thank you for your help and patience with testing Shoelace. I promise, we're not
 - Improved a11y of the scroll buttons in `<sl-tab-group>`
 - Improved a11y of the close button in `<sl-tab>`
 - Improved a11y of `<sl-tab-panel>` by removing an invalid `aria-selected` attribute [#579](https://github.com/shoelace-style/shoelace/issues/579)
-- Improved a11y of `<sl-icon>` by not using a variation of the `name` attribute for labels (use the `label` prop instead)
+- Improved a11y of `<sl-icon>` by not using a variation of the `name` attribute for labels (use the `label` attribute instead)
 - Moved `role` from the shadow root to the host element in `<sl-menu>`
 - Removed redundant `role="menu"` in `<sl-dropdown>`
 - Slightly faster animations for showing and hiding `<sl-dropdown>`
@@ -540,7 +544,7 @@ This release is the second attempt at unbundling dependencies. This will be a br
 Shoelace doesn't have a lot of dependencies, but this release unbundles most of them so you can potentially save some extra kilobytes. This will be a breaking change only if your configuration _does not_ support bare module specifiers. CDN users and bundler users will be unaffected.
 
 - 🚨 BREAKING: renamed the `sl-clear` event to `sl-remove`, the `clear-button` part to `remove-button`, and the `clearable` property to `removable` in `<sl-tag>`
-- Added the `disabled` prop to `<sl-resize-observer>`
+- Added the `disabled` attribute to `<sl-resize-observer>`
 - Fixed a bug in `<sl-mutation-observer>` where setting `disabled` initially didn't work
 - Unbundled dependencies and configured external imports to be packaged with bare module specifiers
 

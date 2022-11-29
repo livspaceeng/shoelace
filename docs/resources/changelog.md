@@ -10,6 +10,18 @@ New versions of Shoelace are released as-needed and generally occur when a criti
 
 ## Next
 
+- Fixed a bug in `<sl-tree-item>` where `sl-selection-change` was emitted when the selection didn't change [#1030](https://github.com/shoelace-style/shoelace/pull/1030)
+- Improved IntelliSense in VS Code, courtesy of [Burton's amazing CEM Analyzer plugin](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator)
+
+## 2.0.0-beta.85
+
+- Fixed a bug in `<sl-dropdown>` that caused containing dialogs, drawers, etc. to close when pressing <kbd>Escape</kbd> while focused [#1024](https://github.com/shoelace-style/shoelace/issues/1024)
+- Fixed a bug in `<sl-tree-item>` that allowed lazy nodes to be incorrectly selected [#1023](https://github.com/shoelace-style/shoelace/pull/1023)
+- Fixed a typing bug in `<sl-tree-item>` [#1026](https://github.com/shoelace-style/shoelace/pull/1026)
+- Updated Floating UI to 1.0.7 to fix a bug that prevented `hoist` from working correctly in `<sl-dropdown>` after a recent update [#1024](https://github.com/shoelace-style/shoelace/issues/1024)
+
+## 2.0.0-beta.84
+
 - 🚨 BREAKING: Removed the `fieldset` property from `<sl-radio-group>` (use CSS parts if you want to keep the border) [#965](https://github.com/shoelace-style/shoelace/issues/965)
 - 🚨 BREAKING: Removed `base` and `label` parts from `<sl-radio-group>` (use `form-control` and `form-control__label` instead) [#965](https://github.com/shoelace-style/shoelace/issues/965)
 - 🚨 BREAKING: Removed the `base` part from `<sl-icon>` (style the host element directly instead)
@@ -21,6 +33,7 @@ New versions of Shoelace are released as-needed and generally occur when a criti
   - `data-valid` - indicates that the form control is valid
   - `data-user-invalid` - indicates the form control is invalid and the user has interacted with it
   - `data-user-valid` - indicates the form control is valid and the user has interacted with it
+- Added npm exports [#1020](https://github.com/shoelace-style/shoelace/pull/1020)
 - Added `checkValidity()` method to all form controls
 - Added `reportValidity()` method to `<sl-range>`
 - Added `button--checked` to `<sl-radio-button>` and `control--checked` to `<sl-radio>` to style just the checked state [#933](https://github.com/shoelace-style/shoelace/pull/933)
@@ -67,6 +80,7 @@ New versions of Shoelace are released as-needed and generally occur when a criti
 - Moved all component descriptions to `@summary` to get them within documentation tools [#962](https://github.com/shoelace-style/shoelace/pull/962)
 - Refactored form controls to use the `ShoelaceFormControl` interface to improve type safety and consistency
 - Updated Lit to 2.4.1
+- Updated `@shoelace-style/localize` t0 3.0.3 to support for extended language codes
 - Updated Bootstrap Icons to 1.10.2
 - Updated TypeScript to 4.8.4
 - Updated esbuild to 0.15.14

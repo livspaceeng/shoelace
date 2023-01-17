@@ -1,27 +1,27 @@
-import { TinyColor } from '@ctrl/tinycolor';
-import { html } from 'lit';
-import { customElement, property, query, state } from 'lit/decorators.js';
-import { classMap } from 'lit/directives/class-map.js';
-import { ifDefined } from 'lit/directives/if-defined.js';
-import { styleMap } from 'lit/directives/style-map.js';
-import { defaultValue } from '../../internal/default-value';
-import { drag } from '../../internal/drag';
-import { FormSubmitController } from '../../internal/form';
-import { clamp } from '../../internal/math';
-import ShoelaceElement from '../../internal/shoelace-element';
-import { watch } from '../../internal/watch';
-import { LocalizeController } from '../../utilities/localize';
 import '../button-group/button-group';
 import '../button/button';
 import '../dropdown/dropdown';
 import '../icon/icon';
 import '../input/input';
 import '../visually-hidden/visually-hidden';
+import { clamp } from '../../internal/math';
+import { classMap } from 'lit/directives/class-map.js';
+import { customElement, property, query, state } from 'lit/decorators.js';
+import { defaultValue } from '../../internal/default-value';
+import { drag } from '../../internal/drag';
+import { FormControlController } from '../../internal/form';
+import { html } from 'lit';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { LocalizeController } from '../../utilities/localize';
+import { styleMap } from 'lit/directives/style-map.js';
+import { TinyColor } from '@ctrl/tinycolor';
+import { watch } from '../../internal/watch';
+import ShoelaceElement from '../../internal/shoelace-element';
 import styles from './color-picker.styles';
+import type { CSSResultGroup } from 'lit';
 import type { ShoelaceFormControl } from '../../internal/shoelace-element';
 import type SlDropdown from '../dropdown/dropdown';
 import type SlInput from '../input/input';
-import type { CSSResultGroup } from 'lit';
 
 const hasEyeDropper = 'EyeDropper' in window;
 
@@ -37,9 +37,9 @@ declare const EyeDropper: EyeDropperConstructor;
 
 /**
  * @summary Color pickers allow the user to select a color.
- *
- * @since 2.0
+ * @documentation https://shoelace.style/components/color-picker
  * @status stable
+ * @since 2.0
  *
  * @dependency sl-button
  * @dependency sl-button-group
@@ -88,8 +88,7 @@ declare const EyeDropper: EyeDropperConstructor;
 export default class SlColorPicker extends ShoelaceElement implements ShoelaceFormControl {
   static styles: CSSResultGroup = styles;
 
-  // @ts-expect-error -- Controller is currently unused
-  private readonly formSubmitController = new FormSubmitController(this);
+  private readonly formControlController = new FormControlController(this);
   private isSafeValue = false;
   private lastValueEmitted: string;
   private readonly localize = new LocalizeController(this);
@@ -105,7 +104,6 @@ export default class SlColorPicker extends ShoelaceElement implements ShoelaceFo
   @state() private saturation = 100;
   @state() private brightness = 100;
   @state() private alpha = 100;
-  @state() invalid = false;
 
   /**
    * The current value of the color picker. The value's format will vary based the `format` attribute. To get the value
@@ -162,6 +160,13 @@ export default class SlColorPicker extends ShoelaceElement implements ShoelaceFo
    * semicolon (`;`). Alternatively, you can pass an array of color values to this property using JavaScript.
    */
   @property() swatches: string | string[] = '';
+
+  /**
+   * By default, form controls are associated with the nearest containing `<form>` element. This attribute allows you
+   * to place the form control outside of a form and associate it with the form that has this `id`. The form must be in
+   * the same document or shadow root for this to work.
+   */
+  @property({ reflect: true }) form = '';
 
   connectedCallback() {
     super.connectedCallback();
@@ -679,7 +684,7 @@ export default class SlColorPicker extends ShoelaceElement implements ShoelaceFo
 
   /** Checks for validity and shows the browser's validation message if the control is invalid. */
   reportValidity() {
-    if (!this.inline && this.input.invalid) {
+    if (!this.inline && !this.checkValidity()) {
       // If the input is inline and invalid, show the dropdown so the browser can focus on it
       this.dropdown.show();
       this.addEventListener('sl-after-show', () => this.input.reportValidity(), { once: true });
@@ -689,10 +694,10 @@ export default class SlColorPicker extends ShoelaceElement implements ShoelaceFo
     return this.input.reportValidity();
   }
 
-  /** Sets a custom validation message. If `message` is not empty, the field will be considered invalid. */
+  /** Sets a custom validation message. Pass an empty string to restore validity. */
   setCustomValidity(message: string) {
     this.input.setCustomValidity(message);
-    this.invalid = this.input.invalid;
+    this.formControlController.updateValidity();
   }
 
   render() {

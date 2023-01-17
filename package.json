@@ -115,13 +115,9 @@
     "prettier": "^2.8.2",
     "react": "^18.2.0",
     "recursive-copy": "^2.0.14",
-<<<<<<< HEAD
     "replace-in-file": "^6.3.5",
-    "sinon": "^14.0.2",
-=======
     "sinon": "^15.0.1",
     "source-map": "^0.7.4",
->>>>>>> patch-123
     "strip-css-comments": "^5.0.0",
     "tslib": "^2.4.1",
     "typescript": "4.9.4",

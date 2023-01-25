@@ -16,4 +16,15 @@
 6. After completion of the installation process, A pull request should be submitted to the prod branch for newly created web component and get it reviewed by @Tarun Pai and/or @Anil Arya before being merged into the production branch.
 
 
-### Note: Sync code with parent repo before creating branch from prod
+## Library Consumption 
+
+1. Install using command  :  `npm install --save-dev @shoelace/livspace` from livspace npm repository
+2. import   specific web compoent   using `import  "@shoelace/livspace/dist/components/textarea/textarea.js`  
+3. import css `import '@shoelace/livspace/dist/themes/livspace.css';`
+4. You can replace `sl-` with `liv-` while using the component 
+   - Let's say `<sl-livcard>` --> `<liv-livcard>` 
+
+
+### Note: 
+1. Sync code with parent repo before creating branch from prod
+2. Code is published on livspace aws code-artifact. 

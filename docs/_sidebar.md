@@ -67,6 +67,8 @@
   - [Tooltip](/components/tooltip)
   - [Tree](/components/tree)
   - [Tree Item](/components/tree-item)
+  - [Livcard](/components/livcard)
+  - [Newcomp](/components/newcomp)
   <!--plop:component-->
 
 - Utilities

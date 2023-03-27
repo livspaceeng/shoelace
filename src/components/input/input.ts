@@ -14,18 +14,6 @@ import styles from './input.styles';
 import type { CSSResultGroup } from 'lit';
 import type { ShoelaceFormControl } from '../../internal/shoelace-element';
 
-//
-// It's currently impossible to hide Firefox's built-in clear icon when using <input type="date|time">, so we need this
-// check to apply a clip-path to hide it. I know, I know…user agent sniffing is nasty but, if it fails, we only see a
-// redundant clear icon so nothing important is breaking. The benefits outweigh the costs for this one. See the
-// discussion at: https://github.com/shoelace-style/shoelace/pull/794
-//
-// Also note that we do the Chromium check first to prevent Chrome from logging a console notice as described here:
-// https://github.com/shoelace-style/shoelace/issues/855
-//
-const isChromium = navigator.userAgentData?.brands.some(b => b.brand.includes('Chromium'));
-const isFirefox = isChromium ? false : navigator.userAgent.includes('Firefox');
-
 /**
  * @summary Inputs collect data from the user.
  * @documentation https://shoelace.style/components/input
@@ -47,6 +35,7 @@ const isFirefox = isChromium ? false : navigator.userAgent.includes('Firefox');
  * @event sl-clear - Emitted when the clear button is activated.
  * @event sl-focus - Emitted when the control gains focus.
  * @event sl-input - Emitted when the control receives input.
+ * @event sl-invalid - Emitted when the form control has been checked for validity and its constraints aren't satisfied.
  *
  * @csspart form-control - The form control that wraps the label, input, and help text.
  * @csspart form-control-label - The label's wrapper.
@@ -63,7 +52,9 @@ const isFirefox = isChromium ? false : navigator.userAgent.includes('Firefox');
 export default class SlInput extends ShoelaceElement implements ShoelaceFormControl {
   static styles: CSSResultGroup = styles;
 
-  private readonly formControlController = new FormControlController(this);
+  private readonly formControlController = new FormControlController(this, {
+    assumeInteractionOn: ['sl-blur', 'sl-input']
+  });
   private readonly hasSlotController = new HasSlotController(this, 'help-text', 'label');
   private readonly localize = new LocalizeController(this);
 
@@ -153,10 +144,10 @@ export default class SlInput extends ShoelaceElement implements ShoelaceFormCont
   @property({ type: Number }) maxlength: number;
 
   /** The input's minimum value. Only applies to date and number input types. */
-  @property({ type: Number }) min: number;
+  @property() min: number | string;
 
   /** The input's maximum value. Only applies to date and number input types. */
-  @property({ type: Number }) max: number;
+  @property() max: number | string;
 
   /**
    * Specifies the granularity that the value must adhere to, or the special value `any` which means no stepping is
@@ -225,6 +216,16 @@ export default class SlInput extends ShoelaceElement implements ShoelaceFormCont
     this.value = input.value;
   }
 
+  /** Gets the validity state object */
+  get validity() {
+    return this.input.validity;
+  }
+
+  /** Gets the validation message */
+  get validationMessage() {
+    return this.input.validationMessage;
+  }
+
   firstUpdated() {
     this.formControlController.updateValidity();
   }
@@ -260,8 +261,9 @@ export default class SlInput extends ShoelaceElement implements ShoelaceFormCont
     this.emit('sl-input');
   }
 
-  private handleInvalid() {
+  private handleInvalid(event: Event) {
     this.formControlController.setValidity(false);
+    this.formControlController.emitInvalidEvent(event);
   }
 
   private handleKeyDown(event: KeyboardEvent) {
@@ -370,9 +372,14 @@ export default class SlInput extends ShoelaceElement implements ShoelaceFormCont
     }
   }
 
-  /** Checks for validity but does not show the browser's validation message. */
+  /** Checks for validity but does not show a validation message. Returns `true` when valid and `false` when invalid. */
   checkValidity() {
     return this.input.checkValidity();
+  }
+
+  /** Gets the associated form, if one exists. */
+  getForm(): HTMLFormElement | null {
+    return this.formControlController.getForm();
   }
 
   /** Checks for validity and shows the browser's validation message if the control is invalid. */
@@ -433,8 +440,7 @@ export default class SlInput extends ShoelaceElement implements ShoelaceFormCont
               'input--disabled': this.disabled,
               'input--focused': this.hasFocus,
               'input--empty': !this.value,
-              'input--no-spin-buttons': this.noSpinButtons,
-              'input--is-firefox': isFirefox
+              'input--no-spin-buttons': this.noSpinButtons
             })}
           >
             <slot name="prefix" part="prefix" class="input__prefix"></slot>
@@ -455,9 +461,9 @@ export default class SlInput extends ShoelaceElement implements ShoelaceFormCont
               max=${ifDefined(this.max)}
               step=${ifDefined(this.step as number)}
               .value=${live(this.value)}
-              autocapitalize=${ifDefined(this.type === 'password' ? 'off' : this.autocapitalize)}
-              autocomplete=${ifDefined(this.type === 'password' ? 'off' : this.autocomplete)}
-              autocorrect=${ifDefined(this.type === 'password' ? 'off' : this.autocorrect)}
+              autocapitalize=${ifDefined(this.autocapitalize)}
+              autocomplete=${ifDefined(this.autocomplete)}
+              autocorrect=${ifDefined(this.autocorrect)}
               ?autofocus=${this.autofocus}
               spellcheck=${this.spellcheck}
               pattern=${ifDefined(this.pattern)}

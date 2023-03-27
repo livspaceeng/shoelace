@@ -19,6 +19,7 @@ import type { CSSResultGroup } from 'lit';
 import type { ShoelaceFormControl } from '../../internal/shoelace-element';
 import type SlOption from '../option/option';
 import type SlPopup from '../popup/popup';
+import type SlRemoveEvent from '../../events/sl-remove';
 
 /**
  * @summary Selects allow you to choose items from a menu of predefined options.
@@ -46,6 +47,7 @@ import type SlPopup from '../popup/popup';
  * @event sl-after-show - Emitted after the select's menu opens and all animations are complete.
  * @event sl-hide - Emitted when the select's menu closes.
  * @event sl-after-hide - Emitted after the select's menu closes and all animations are complete.
+ * @event sl-invalid - Emitted when the form control has been checked for validity and its constraints aren't satisfied.
  *
  * @csspart form-control - The form control that wraps the label, input, and help text.
  * @csspart form-control-label - The label's wrapper.
@@ -57,6 +59,10 @@ import type SlPopup from '../popup/popup';
  * @csspart listbox - The listbox container where options are slotted.
  * @csspart tags - The container that houses option tags when `multiselect` is used.
  * @csspart tag - The individual tags that represent each multiselect option.
+ * @csspart tag__base - The tag's base part.
+ * @csspart tag__content - The tag's content part.
+ * @csspart tag__remove-button - The tag's remove button.
+ * @csspart tag__remove-button__base - The tag's remove button base part.
  * @csspart clear-button - The clear button.
  * @csspart expand-icon - The container that wraps the expand icon.
  */
@@ -64,7 +70,9 @@ import type SlPopup from '../popup/popup';
 export default class SlSelect extends ShoelaceElement implements ShoelaceFormControl {
   static styles: CSSResultGroup = styles;
 
-  private readonly formControlController = new FormControlController(this);
+  private readonly formControlController = new FormControlController(this, {
+    assumeInteractionOn: ['sl-blur', 'sl-input']
+  });
   private readonly hasSlotController = new HasSlotController(this, 'help-text', 'label');
   private readonly localize = new LocalizeController(this);
   private typeToSelectString = '';
@@ -160,6 +168,16 @@ export default class SlSelect extends ShoelaceElement implements ShoelaceFormCon
   /** The select's required attribute. */
   @property({ type: Boolean, reflect: true }) required = false;
 
+  /** Gets the validity state object */
+  get validity() {
+    return this.valueInput.validity;
+  }
+
+  /** Gets the validation message */
+  get validationMessage() {
+    return this.valueInput.validationMessage;
+  }
+
   connectedCallback() {
     super.connectedCallback();
     this.handleDocumentFocusIn = this.handleDocumentFocusIn.bind(this);
@@ -239,8 +257,11 @@ export default class SlSelect extends ShoelaceElement implements ShoelaceFormCon
           this.setSelectedOptions(this.currentOption);
         }
 
-        this.emit('sl-input');
-        this.emit('sl-change');
+        // Emit after updating
+        this.updateComplete.then(() => {
+          this.emit('sl-input');
+          this.emit('sl-change');
+        });
 
         if (!this.multiple) {
           this.hide();
@@ -364,9 +385,13 @@ export default class SlSelect extends ShoelaceElement implements ShoelaceFormCon
     if (this.value !== '') {
       this.setSelectedOptions([]);
       this.displayInput.focus({ preventScroll: true });
-      this.emit('sl-clear');
-      this.emit('sl-input');
-      this.emit('sl-change');
+
+      // Emit after update
+      this.updateComplete.then(() => {
+        this.emit('sl-clear');
+        this.emit('sl-input');
+        this.emit('sl-change');
+      });
     }
   }
 
@@ -392,8 +417,11 @@ export default class SlSelect extends ShoelaceElement implements ShoelaceFormCon
       this.updateComplete.then(() => this.displayInput.focus({ preventScroll: true }));
 
       if (this.value !== oldValue) {
-        this.emit('sl-input');
-        this.emit('sl-change');
+        // Emit after updating
+        this.updateComplete.then(() => {
+          this.emit('sl-input');
+          this.emit('sl-change');
+        });
       }
 
       if (!this.multiple) {
@@ -409,27 +437,28 @@ export default class SlSelect extends ShoelaceElement implements ShoelaceFormCon
     const values: string[] = [];
 
     // Check for duplicate values in menu items
-    allOptions.forEach(option => {
-      if (values.includes(option.value)) {
-        console.error(
-          `An option with a duplicate value of "${option.value}" has been found in <sl-select>. All options must have unique values.`,
-          option
-        );
-      }
-      values.push(option.value);
-    });
+    if (customElements.get('sl-option')) {
+      allOptions.forEach(option => values.push(option.value));
 
-    // Select only the options that match the new value
-    this.setSelectedOptions(allOptions.filter(el => value.includes(el.value)));
+      // Select only the options that match the new value
+      this.setSelectedOptions(allOptions.filter(el => value.includes(el.value)));
+    } else {
+      // Rerun this handler when <sl-option> is registered
+      customElements.whenDefined('sl-option').then(() => this.handleDefaultSlotChange());
+    }
   }
 
-  private handleTagRemove(event: CustomEvent, option: SlOption) {
+  private handleTagRemove(event: SlRemoveEvent, option: SlOption) {
     event.stopPropagation();
 
     if (!this.disabled) {
       this.toggleOptionSelection(option, false);
-      this.emit('sl-input');
-      this.emit('sl-change');
+
+      // Emit after updating
+      this.updateComplete.then(() => {
+        this.emit('sl-input');
+        this.emit('sl-change');
+      });
     }
   }
 
@@ -518,6 +547,11 @@ export default class SlSelect extends ShoelaceElement implements ShoelaceFormCon
     });
   }
 
+  private handleInvalid(event: Event) {
+    this.formControlController.setValidity(false);
+    this.formControlController.emitInvalidEvent(event);
+  }
+
   @watch('disabled', { waitUntilFirstUpdate: true })
   handleDisabledChange() {
     // Close the listbox when the control is disabled
@@ -601,9 +635,14 @@ export default class SlSelect extends ShoelaceElement implements ShoelaceFormCon
     return waitForEvent(this, 'sl-after-hide');
   }
 
-  /** Checks for validity but does not show the browser's validation message. */
+  /** Checks for validity but does not show a validation message. Returns `true` when valid and `false` when invalid. */
   checkValidity() {
     return this.valueInput.checkValidity();
+  }
+
+  /** Gets the associated form, if one exists. */
+  getForm(): HTMLFormElement | null {
+    return this.formControlController.getForm();
   }
 
   /** Checks for validity and shows the browser's validation message if the control is invalid. */
@@ -723,10 +762,16 @@ export default class SlSelect extends ShoelaceElement implements ShoelaceFormCon
                           return html`
                             <sl-tag
                               part="tag"
+                              exportparts="
+                                base:tag__base,
+                                content:tag__content,
+                                remove-button:tag__remove-button,
+                                remove-button__base:tag__remove-button__base
+                              "
                               ?pill=${this.pill}
                               size=${this.size}
                               removable
-                              @sl-remove=${(event: CustomEvent) => this.handleTagRemove(event, option)}
+                              @sl-remove=${(event: SlRemoveEvent) => this.handleTagRemove(event, option)}
                             >
                               ${option.getTextLabel()}
                             </sl-tag>
@@ -750,6 +795,7 @@ export default class SlSelect extends ShoelaceElement implements ShoelaceFormCon
                 tabindex="-1"
                 aria-hidden="true"
                 @focus=${() => this.focus()}
+                @invalid=${this.handleInvalid}
               />
 
               ${hasClearIcon
@@ -788,17 +834,17 @@ export default class SlSelect extends ShoelaceElement implements ShoelaceFormCon
               @slotchange=${this.handleDefaultSlotChange}
             ></slot>
           </sl-popup>
-
-          <slot
-            name="help-text"
-            part="form-control-help-text"
-            id="help-text"
-            class="form-control__help-text"
-            aria-hidden=${hasHelpText ? 'false' : 'true'}
-          >
-            ${this.helpText}
-          </slot>
         </div>
+
+        <slot
+          name="help-text"
+          part="form-control-help-text"
+          id="help-text"
+          class="form-control__help-text"
+          aria-hidden=${hasHelpText ? 'false' : 'true'}
+        >
+          ${this.helpText}
+        </slot>
       </div>
     `;
   }

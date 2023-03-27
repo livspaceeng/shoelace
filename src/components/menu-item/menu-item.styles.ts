@@ -60,7 +60,7 @@ export default css`
     margin-inline-start: var(--sl-spacing-x-small);
   }
 
-  :host(:focus) {
+  :host(:focus-visible) {
     outline: none;
   }
 

@@ -1,7 +1,9 @@
 import { aTimeout, expect, fixture, html, oneEvent, waitUntil } from '@open-wc/testing';
 import { clickOnElement } from '../../internal/test';
+import { runFormControlBaseTests } from '../../internal/test/form-control-base-tests';
 import { sendKeys } from '@web/test-runner-commands';
 import sinon from 'sinon';
+import type SlChangeEvent from '../../events/sl-change';
 import type SlRadio from '../radio/radio';
 import type SlRadioGroup from './radio-group';
 
@@ -128,6 +130,25 @@ describe('<sl-radio-group>', () => {
       await radioGroup.updateComplete;
 
       expect(radioGroup.hasAttribute('data-user-invalid')).to.be.true;
+      expect(radioGroup.hasAttribute('data-user-valid')).to.be.false;
+    });
+
+    it('should receive validation attributes ("states") even when novalidate is used on the parent form', async () => {
+      const el = await fixture<HTMLFormElement>(html`
+        <form novalidate>
+          <sl-radio-group required>
+            <sl-radio value="1"></sl-radio>
+            <sl-radio value="2"></sl-radio>
+          </sl-radio-group>
+        </form>
+      `);
+      const radioGroup = el.querySelector<SlRadioGroup>('sl-radio-group')!;
+
+      expect(radioGroup.hasAttribute('data-required')).to.be.true;
+      expect(radioGroup.hasAttribute('data-optional')).to.be.false;
+      expect(radioGroup.hasAttribute('data-invalid')).to.be.true;
+      expect(radioGroup.hasAttribute('data-valid')).to.be.false;
+      expect(radioGroup.hasAttribute('data-user-invalid')).to.be.false;
       expect(radioGroup.hasAttribute('data-user-valid')).to.be.false;
     });
   });
@@ -263,7 +284,7 @@ describe('when the value changes', () => {
     `);
     const radio = radioGroup.querySelector<SlRadio>('#radio-1')!;
     setTimeout(() => radio.click());
-    const event = (await oneEvent(radioGroup, 'sl-change')) as CustomEvent;
+    const event = (await oneEvent(radioGroup, 'sl-change')) as SlChangeEvent;
     expect(event.target).to.equal(radioGroup);
     expect(radioGroup.value).to.equal('1');
   });
@@ -278,7 +299,7 @@ describe('when the value changes', () => {
     const radio = radioGroup.querySelector<SlRadio>('#radio-1')!;
     radio.focus();
     setTimeout(() => sendKeys({ press: ' ' }));
-    const event = (await oneEvent(radioGroup, 'sl-change')) as CustomEvent;
+    const event = (await oneEvent(radioGroup, 'sl-change')) as SlChangeEvent;
     expect(event.target).to.equal(radioGroup);
     expect(radioGroup.value).to.equal('1');
   });
@@ -296,4 +317,6 @@ describe('when the value changes', () => {
     radioGroup.value = '2';
     await radioGroup.updateComplete;
   });
+
+  runFormControlBaseTests('sl-radio-group');
 });

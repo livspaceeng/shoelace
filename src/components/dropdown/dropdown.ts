@@ -6,7 +6,6 @@ import { getAnimation, setDefaultAnimation } from '../../utilities/animation-reg
 import { getTabbableBoundary } from '../../internal/tabbable';
 import { html } from 'lit';
 import { LocalizeController } from '../../utilities/localize';
-import { scrollIntoView } from '../../internal/scroll';
 import { waitForEvent } from '../../internal/event';
 import { watch } from '../../internal/watch';
 import ShoelaceElement from '../../internal/shoelace-element';
@@ -15,8 +14,8 @@ import type { CSSResultGroup } from 'lit';
 import type SlButton from '../button/button';
 import type SlIconButton from '../icon-button/icon-button';
 import type SlMenu from '../menu/menu';
-import type SlMenuItem from '../menu-item/menu-item';
 import type SlPopup from '../popup/popup';
+import type SlSelectEvent from '../../events/sl-select';
 
 /**
  * @summary Dropdowns expose additional content that "drops down" in a panel.
@@ -104,7 +103,6 @@ export default class SlDropdown extends ShoelaceElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this.handleMenuItemActivate = this.handleMenuItemActivate.bind(this);
     this.handlePanelSelect = this.handlePanelSelect.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleDocumentKeyDown = this.handleDocumentKeyDown.bind(this);
@@ -155,6 +153,14 @@ export default class SlDropdown extends ShoelaceElement {
   }
 
   handleDocumentKeyDown(event: KeyboardEvent) {
+    // Close when escape or tab is pressed
+    if (event.key === 'Escape' && this.open) {
+      event.stopPropagation();
+      this.focusOnTrigger();
+      this.hide();
+      return;
+    }
+
     // Handle tabbing
     if (event.key === 'Tab') {
       // Tabbing within an open menu should close the dropdown and refocus the trigger
@@ -193,12 +199,7 @@ export default class SlDropdown extends ShoelaceElement {
     }
   }
 
-  handleMenuItemActivate(event: CustomEvent) {
-    const item = event.target as SlMenuItem;
-    scrollIntoView(item, this.panel);
-  }
-
-  handlePanelSelect(event: CustomEvent) {
+  handlePanelSelect(event: SlSelectEvent) {
     const target = event.target as HTMLElement;
 
     // Hide the dropdown when a menu item is selected
@@ -213,18 +214,11 @@ export default class SlDropdown extends ShoelaceElement {
       this.hide();
     } else {
       this.show();
+      this.focusOnTrigger();
     }
   }
 
   handleTriggerKeyDown(event: KeyboardEvent) {
-    // Close when escape or tab is pressed
-    if (event.key === 'Escape' && this.open) {
-      event.stopPropagation();
-      this.focusOnTrigger();
-      this.hide();
-      return;
-    }
-
     // When spacebar/enter is pressed, show the panel but don't focus on the menu. This let's the user press the same
     // key again to hide the menu in case they don't want to make a selection.
     if ([' ', 'Enter'].includes(event.key)) {
@@ -236,7 +230,7 @@ export default class SlDropdown extends ShoelaceElement {
     const menu = this.getMenu();
 
     if (menu) {
-      const menuItems = menu.defaultSlot.assignedElements({ flatten: true }) as SlMenuItem[];
+      const menuItems = menu.getAllItems();
       const firstMenuItem = menuItems[0];
       const lastMenuItem = menuItems[menuItems.length - 1];
 
@@ -253,7 +247,7 @@ export default class SlDropdown extends ShoelaceElement {
 
         if (menuItems.length > 0) {
           // Focus on the first/last menu item after showing
-          requestAnimationFrame(() => {
+          this.updateComplete.then(() => {
             if (event.key === 'ArrowDown' || event.key === 'Home') {
               menu.setCurrentItem(firstMenuItem);
               firstMenuItem.focus();
@@ -341,7 +335,6 @@ export default class SlDropdown extends ShoelaceElement {
   }
 
   addOpenListeners() {
-    this.panel.addEventListener('sl-activate', this.handleMenuItemActivate);
     this.panel.addEventListener('sl-select', this.handlePanelSelect);
     this.panel.addEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keydown', this.handleDocumentKeyDown);
@@ -350,7 +343,6 @@ export default class SlDropdown extends ShoelaceElement {
 
   removeOpenListeners() {
     if (this.panel) {
-      this.panel.removeEventListener('sl-activate', this.handleMenuItemActivate);
       this.panel.removeEventListener('sl-select', this.handlePanelSelect);
       this.panel.removeEventListener('keydown', this.handleKeyDown);
     }

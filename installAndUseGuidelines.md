@@ -34,3 +34,4 @@ TODO : Deploying build files to s3 bucket for better consumption in pure JS base
 
 ### Note: 
 2. Code is published on livspace aws code-artifact.
+3. Parent Doc : https://shoelace.style/

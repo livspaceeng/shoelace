@@ -19,10 +19,10 @@
 ## Library Consumption
 
 1. Install using command : `npm install --save-dev @livspace/web-component` from livspace [AWS codeArtifact](https://livspaceengg.atlassian.net/wiki/spaces/UC/pages/160202863/Private+npm+registry+CodeArtifact)
-2. import specific web compoent using `import  "@livspace/web-component/dist/components/textarea/textarea.js`
+2. import specific web compoent using `import  "@livspace/web-component/dist/components/livcard/livcard.js`
 3. We can import all the components at a time also.
 4. import css `import '@livspace/web-component/dist/themes/livspace.css';`
-5. Use `sl-  component
+5. Use `sl-`  component
    - Let's say `<sl-livcard>` 
 
 ### Note:

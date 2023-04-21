@@ -14,14 +14,15 @@
    - /shoelace/docs/_sidebar.md
 ```
 
-6. After completion of the installation process, A pull request should be submitted to the prod branch for newly created web component and get it reviewed by @Tarun Pai and/or @Anil Arya before being merged into the production branch.
+6. After completion of the installation process, A pull request should be submitted to the prod branch for newly created web component and get it reviewed by @Anil Arya/ @Rohit before being merged into the production branch.
 
 ## Library Consumption
 
 1. Install using command : `npm install --save-dev @shoelace/livspace` from livspace [npm repository](https://livspaceengg.atlassian.net/wiki/spaces/UC/pages/160202863/Private+npm+registry+CodeArtifact)
 2. import specific web compoent using `import  "@shoelace/livspace/dist/components/textarea/textarea.js`
-3. import css `import '@shoelace/livspace/dist/themes/livspace.css';`
-4. Use `sl-  component
+3. We can import all the components at a time also.
+4. import css `import '@shoelace/livspace/dist/themes/livspace.css';`
+5. Use `sl-  component
    - Let's say `<sl-livcard>` 
 
 ### Note:

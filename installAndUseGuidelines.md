@@ -21,8 +21,8 @@
 1. Install using command : `npm install --save-dev @shoelace/livspace` from livspace [npm repository](https://livspaceengg.atlassian.net/wiki/spaces/UC/pages/160202863/Private+npm+registry+CodeArtifact)
 2. import specific web compoent using `import  "@shoelace/livspace/dist/components/textarea/textarea.js`
 3. import css `import '@shoelace/livspace/dist/themes/livspace.css';`
-4. You can replace `sl-` with `liv-` while using the component
-   - Let's say `<sl-livcard>` --> `<liv-livcard>`
+4. Use `sl-  component
+   - Let's say `<sl-livcard>` 
 
 ### Note:
 

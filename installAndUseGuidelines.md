@@ -1,9 +1,9 @@
 # Installation guidelines
 
 1. The first step is to install Node.js version 16 or higher.
-2. Next, run the command npm install to install the necessary dependencies.
-3. To run the documentation locally, you should execute the command npm run start.
-4. To create a new web component, use the command npm run create sl-<web_component_name>.
+2. Next, run the command `npm install` to install the necessary dependencies.
+3. To run the documentation locally, you should execute the command `npm run start` .
+4. To create a new web component, use the command npm run create `sl-<web_component_name>`
 5. Finally, update the files listed below based on their corresponding paths:
 
 ```

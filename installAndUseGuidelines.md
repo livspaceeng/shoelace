@@ -20,12 +20,13 @@
 
 1. Install using command : `npm install --save-dev @livspace/web-component` from livspace [AWS codeArtifact](https://livspaceengg.atlassian.net/wiki/spaces/UC/pages/160202863/Private+npm+registry+CodeArtifact)
 2. import specific web compoent using `import  "@livspace/web-component/dist/components/livcard/livcard.js`
-3. We can import all the components at a time also.
+3. We can import all the components at a time also, depends on the framework being used
 4. import css `import '@livspace/web-component/dist/themes/livspace.css';`
 5. Use `sl-`  component
    - Let's say `<sl-livcard>` 
 
-### Note:
 
-1. Sync code with parent repo before creating branch from prod
+TODO : Deploying build files to s3 bucket for better consumption in pure JS based application.
+
+### Note: 
 2. Code is published on livspace aws code-artifact.

@@ -13,8 +13,8 @@
   --sl-color-gray-200: hsl(240 5.9% 90%);
   --sl-color-gray-300: hsl(240 4.9% 83.9%);
   --sl-color-gray-400: hsl(240 5% 64.9%);
-  --sl-color-gray-500: hsl(240 3.8% 46.1%);
-  --sl-color-gray-600: hsl(240 5.2% 33.9%);
+  --sl-color-gray-500: #666666;
+  --sl-color-gray-600: #999999;
   --sl-color-gray-700: hsl(240 5.3% 26.1%);
   --sl-color-gray-800: hsl(240 3.7% 15.9%);
   --sl-color-gray-900: hsl(240 5.9% 10%);
@@ -26,8 +26,8 @@
   --sl-color-red-200: hsl(0 96.3% 89.4%);
   --sl-color-red-300: hsl(0 93.5% 81.8%);
   --sl-color-red-400: hsl(0 90.6% 70.8%);
-  --sl-color-red-500: hsl(0 84.2% 60.2%);
-  --sl-color-red-600: hsl(0 72.2% 50.6%);
+  --sl-color-red-500: #AF2D22;
+  --sl-color-red-600: #DB382A;
   --sl-color-red-700: hsl(0 73.7% 41.8%);
   --sl-color-red-800: hsl(0 70% 35.3%);
   --sl-color-red-900: hsl(0 62.8% 30.6%);
@@ -52,8 +52,8 @@
   --sl-color-amber-200: hsl(48 96.6% 76.7%);
   --sl-color-amber-300: hsl(45.9 96.7% 64.5%);
   --sl-color-amber-400: hsl(43.3 96.4% 56.3%);
-  --sl-color-amber-500: hsl(37.7 92.1% 50.2%);
-  --sl-color-amber-600: hsl(32.1 94.6% 43.7%);
+  --sl-color-amber-500: #C17E22;
+  --sl-color-amber-600: #F19E2B;
   --sl-color-amber-700: hsl(26 90.5% 37.1%);
   --sl-color-amber-800: hsl(22.7 82.5% 31.4%);
   --sl-color-amber-900: hsl(21.7 77.8% 26.5%);
@@ -86,13 +86,13 @@
   --sl-color-lime-950: hsl(86.5 60.6% 13.9%);
 
   /* Green */
-  --sl-color-green-50: hsl(138.5 76.5% 96.7%);
+  --sl-color-green-50: #DAECDE;
   --sl-color-green-100: hsl(140.6 84.2% 92.5%);
   --sl-color-green-200: hsl(141 78.9% 85.1%);
   --sl-color-green-300: hsl(141.7 76.6% 73.1%);
   --sl-color-green-400: hsl(141.9 69.2% 58%);
-  --sl-color-green-500: hsl(142.1 70.6% 45.3%);
-  --sl-color-green-600: hsl(142.1 76.2% 36.3%);
+  --sl-color-green-500: #387E47;
+  --sl-color-green-600: #469E59;
   --sl-color-green-700: hsl(142.4 71.8% 29.2%);
   --sl-color-green-800: hsl(142.8 64.2% 24.1%);
   --sl-color-green-900: hsl(143.8 61.2% 20.2%);
@@ -138,13 +138,13 @@
   --sl-color-cyan-950: hsl(196.8 61% 16.1%);
 
   /* Sky */
-  --sl-color-sky-50: hsl(204 100% 97.1%);
+  --sl-color-sky-50: #EBEEFE;
   --sl-color-sky-100: hsl(204 93.8% 93.7%);
-  --sl-color-sky-200: hsl(200.6 94.4% 86.1%);
+  --sl-color-sky-200: #DCDEF0;
   --sl-color-sky-300: hsl(199.4 95.5% 73.9%);
   --sl-color-sky-400: hsl(198.4 93.2% 59.6%);
-  --sl-color-sky-500: hsl(198.6 88.7% 48.4%);
-  --sl-color-sky-600: hsl(200.4 98% 39.4%);
+  --sl-color-sky-500: #2B44C1;
+  --sl-color-sky-600: #3655F2;
   --sl-color-sky-700: hsl(201.3 96.3% 32.2%);
   --sl-color-sky-800: hsl(201 90% 27.5%);
   --sl-color-sky-900: hsl(202 80.3% 23.9%);
@@ -156,8 +156,8 @@
   --sl-color-blue-200: hsl(213.3 96.9% 87.3%);
   --sl-color-blue-300: hsl(211.7 96.4% 78.4%);
   --sl-color-blue-400: hsl(213.1 93.9% 67.8%);
-  --sl-color-blue-500: hsl(217.2 91.2% 59.8%);
-  --sl-color-blue-600: hsl(221.2 83.2% 53.3%);
+  --sl-color-blue-500: #3E4690;
+  --sl-color-blue-600: #4E58B4;
   --sl-color-blue-700: hsl(224.3 76.3% 48%);
   --sl-color-blue-800: hsl(225.9 70.7% 40.2%);
   --sl-color-blue-900: hsl(224.4 64.3% 32.9%);
@@ -240,7 +240,6 @@
   --sl-color-rose-800: hsl(343.4 79.7% 34.7%);
   --sl-color-rose-900: hsl(341.5 75.5% 30.4%);
   --sl-color-rose-950: hsl(341.3 70.1% 17.1%);
-
   /*
    * Theme Tokens
    */
@@ -402,16 +401,16 @@
   --sl-line-height-loose: 2.2;
   --sl-line-height-looser: 2.6;
 
-  /*
-   * Forms
-   */
-
   /* Focus rings */
   --sl-focus-ring-color: var(--sl-color-primary-600);
   --sl-focus-ring-style: solid;
   --sl-focus-ring-width: 3px;
   --sl-focus-ring: var(--sl-focus-ring-style) var(--sl-focus-ring-width) var(--sl-focus-ring-color);
   --sl-focus-ring-offset: 1px;
+
+  /*
+   * Forms
+   */
 
   /* Buttons */
   --sl-button-font-size-small: var(--sl-font-size-x-small);
@@ -460,6 +459,9 @@
   --sl-input-spacing-medium: var(--sl-spacing-medium);
   --sl-input-spacing-large: var(--sl-spacing-large);
 
+  --sl-input-focus-ring-color: hsl(198.6 88.7% 48.4% / 40%);
+  --sl-input-focus-ring-offset: 0;
+
   --sl-input-filled-background-color: var(--sl-color-neutral-100);
   --sl-input-filled-background-color-hover: var(--sl-color-neutral-100);
   --sl-input-filled-background-color-focus: var(--sl-color-neutral-100);
@@ -469,25 +471,22 @@
   --sl-input-filled-color-focus: var(--sl-color-neutral-700);
   --sl-input-filled-color-disabled: var(--sl-color-neutral-800);
 
-  --sl-input-focus-ring-color: hsl(198.6 88.7% 48.4% / 40%);
-  --sl-input-focus-ring-offset: 0;
-
   /* Labels */
   --sl-input-label-font-size-small: var(--sl-font-size-small);
   --sl-input-label-font-size-medium: var(--sl-font-size-medium);
   --sl-input-label-font-size-large: var(--sl-font-size-large);
-
   --sl-input-label-color: inherit;
 
   /* Help text */
   --sl-input-help-text-font-size-small: var(--sl-font-size-x-small);
   --sl-input-help-text-font-size-medium: var(--sl-font-size-small);
   --sl-input-help-text-font-size-large: var(--sl-font-size-medium);
-
   --sl-input-help-text-color: var(--sl-color-neutral-500);
 
   /* Toggles (checkboxes, radios, switches) */
-  --sl-toggle-size: 1rem;
+  --sl-toggle-size-small: 0.875rem; /* 14px */
+  --sl-toggle-size-medium: 1.125rem; /* 18px */
+  --sl-toggle-size-large: 1.375rem; /* 22px */
 
   /*
    * Overlays

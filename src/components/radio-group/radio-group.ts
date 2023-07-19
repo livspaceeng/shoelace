@@ -1,4 +1,4 @@
-import '../button-group/button-group';
+import '../button-group/button-group.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import {
@@ -6,16 +6,16 @@ import {
   FormControlController,
   validValidityState,
   valueMissingValidityState
-} from '../../internal/form';
-import { HasSlotController } from '../../internal/slot';
+} from '../../internal/form.js';
+import { HasSlotController } from '../../internal/slot.js';
 import { html } from 'lit';
-import { watch } from '../../internal/watch';
-import ShoelaceElement from '../../internal/shoelace-element';
-import styles from './radio-group.styles';
+import { watch } from '../../internal/watch.js';
+import ShoelaceElement from '../../internal/shoelace-element.js';
+import styles from './radio-group.styles.js';
 import type { CSSResultGroup } from 'lit';
-import type { ShoelaceFormControl } from '../../internal/shoelace-element';
-import type SlRadio from '../radio/radio';
-import type SlRadioButton from '../radio-button/radio-button';
+import type { ShoelaceFormControl } from '../../internal/shoelace-element.js';
+import type SlRadio from '../radio/radio.js';
+import type SlRadioButton from '../radio-button/radio-button.js';
 
 /**
  * @summary Radio groups are used to group multiple [radios](/components/radio) or [radio buttons](/components/radio-button) so they function as a single form control.
@@ -204,40 +204,57 @@ export default class SlRadioGroup extends ShoelaceElement implements ShoelaceFor
     this.formControlController.emitInvalidEvent(event);
   }
 
-  private syncRadios() {
-    if (customElements.get('sl-radio') || customElements.get('sl-radio-button')) {
-      const radios = this.getAllRadios();
+  private async syncRadioElements() {
+    const radios = this.getAllRadios();
 
+    await Promise.all(
       // Sync the checked state and size
-      radios.forEach(radio => {
+      radios.map(async radio => {
+        await radio.updateComplete;
         radio.checked = radio.value === this.value;
         radio.size = this.size;
-      });
+      })
+    );
 
-      this.hasButtonGroup = radios.some(radio => radio.tagName.toLowerCase() === 'sl-radio-button');
+    this.hasButtonGroup = radios.some(radio => radio.tagName.toLowerCase() === 'sl-radio-button');
 
-      if (!radios.some(radio => radio.checked)) {
-        if (this.hasButtonGroup) {
-          const buttonRadio = radios[0].shadowRoot?.querySelector('button');
-
-          if (buttonRadio) {
-            buttonRadio.tabIndex = 0;
-          }
-        } else {
-          radios[0].tabIndex = 0;
-        }
-      }
-
+    if (!radios.some(radio => radio.checked)) {
       if (this.hasButtonGroup) {
-        const buttonGroup = this.shadowRoot?.querySelector('sl-button-group');
+        const buttonRadio = radios[0].shadowRoot?.querySelector('button');
 
-        if (buttonGroup) {
-          buttonGroup.disableRole = true;
+        if (buttonRadio) {
+          buttonRadio.tabIndex = 0;
         }
+      } else {
+        radios[0].tabIndex = 0;
       }
+    }
+
+    if (this.hasButtonGroup) {
+      const buttonGroup = this.shadowRoot?.querySelector('sl-button-group');
+
+      if (buttonGroup) {
+        buttonGroup.disableRole = true;
+      }
+    }
+  }
+
+  private syncRadios() {
+    if (customElements.get('sl-radio') && customElements.get('sl-radio-button')) {
+      this.syncRadioElements();
+      return;
+    }
+
+    if (customElements.get('sl-radio')) {
+      this.syncRadioElements();
+    } else {
+      customElements.whenDefined('sl-radio').then(() => this.syncRadios());
+    }
+
+    if (customElements.get('sl-radio-button')) {
+      this.syncRadioElements();
     } else {
       // Rerun this handler when <sl-radio> or <sl-radio-button> is registered
-      customElements.whenDefined('sl-radio').then(() => this.syncRadios());
       customElements.whenDefined('sl-radio-button').then(() => this.syncRadios());
     }
   }
@@ -312,12 +329,9 @@ export default class SlRadioGroup extends ShoelaceElement implements ShoelaceFor
     const hasHelpText = this.helpText ? true : !!hasHelpTextSlot;
 
     const defaultSlot = html`
-      <slot
-        @click=${this.handleRadioClick}
-        @keydown=${this.handleKeyDown}
-        @slotchange=${this.syncRadios}
-        role="presentation"
-      ></slot>
+      <span @click=${this.handleRadioClick} @keydown=${this.handleKeyDown} role="presentation">
+        <slot @slotchange=${this.syncRadios}></slot>
+      </span>
     `;
 
     return html`
@@ -371,15 +385,14 @@ export default class SlRadioGroup extends ShoelaceElement implements ShoelaceFor
             : defaultSlot}
         </div>
 
-        <slot
-          name="help-text"
+        <div
           part="form-control-help-text"
           id="help-text"
           class="form-control__help-text"
           aria-hidden=${hasHelpText ? 'false' : 'true'}
         >
-          ${this.helpText}
-        </slot>
+          <slot name="help-text">${this.helpText}</slot>
+        </div>
       </fieldset>
     `;
     /* eslint-enable lit-a11y/click-events-have-key-events */

@@ -1,7 +1,8 @@
+import '../../../dist/shoelace.js';
 import { expect, fixture, html, waitUntil } from '@open-wc/testing';
-import { runFormControlBaseTests } from '../../internal/test/form-control-base-tests';
+import { runFormControlBaseTests } from '../../internal/test/form-control-base-tests.js';
 import sinon from 'sinon';
-import type SlButton from './button';
+import type SlButton from './button.js';
 
 const variants = ['default', 'primary', 'success', 'neutral', 'warning', 'danger'];
 
@@ -66,27 +67,6 @@ describe('<sl-button>', () => {
     it('should not disable the native <a> when rendering an <a>', async () => {
       const el = await fixture<SlButton>(html` <sl-button href="some/path" disabled>Button Label</sl-button> `);
       expect(el.shadowRoot!.querySelector('a[disabled]')).not.to.exist;
-    });
-
-    it('should not bubble up clicks', async () => {
-      const button = await fixture<SlButton>(html` <sl-button disabled>Button Label</sl-button> `);
-      const handleClick = sinon.spy();
-      button.addEventListener('click', handleClick);
-      button.click();
-
-      expect(handleClick).not.to.have.been.called;
-
-      button.shadowRoot!.querySelector('button')!.click();
-      expect(handleClick).not.to.have.been.called;
-
-      const buttonLink = await fixture<SlButton>(html` <sl-button href="some/path" disabled>Button Label</sl-button> `);
-      buttonLink.addEventListener('click', handleClick);
-      buttonLink.click();
-
-      expect(handleClick).not.to.have.been.called;
-
-      buttonLink.shadowRoot!.querySelector('a')!.click();
-      expect(handleClick).not.to.have.been.called;
     });
   });
 

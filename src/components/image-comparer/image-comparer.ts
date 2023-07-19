@@ -1,14 +1,14 @@
-import '../icon/icon';
-import { clamp } from '../../internal/math';
+import '../icon/icon.js';
+import { clamp } from '../../internal/math.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { customElement, property, query } from 'lit/decorators.js';
-import { drag } from '../../internal/drag';
+import { drag } from '../../internal/drag.js';
 import { html } from 'lit';
-import { LocalizeController } from '../../utilities/localize';
+import { LocalizeController } from '../../utilities/localize.js';
 import { styleMap } from 'lit/directives/style-map.js';
-import { watch } from '../../internal/watch';
-import ShoelaceElement from '../../internal/shoelace-element';
-import styles from './image-comparer.styles';
+import { watch } from '../../internal/watch.js';
+import ShoelaceElement from '../../internal/shoelace-element.js';
+import styles from './image-comparer.styles.js';
 import type { CSSResultGroup } from 'lit';
 
 /**
@@ -108,16 +108,19 @@ export default class SlImageComparer extends ShoelaceElement {
         @keydown=${this.handleKeyDown}
       >
         <div class="image-comparer__image">
-          <slot name="before" part="before" class="image-comparer__before"></slot>
+          <div part="before" class="image-comparer__before">
+            <slot name="before"></slot>
+          </div>
 
-          <slot
-            name="after"
+          <div
             part="after"
             class="image-comparer__after"
             style=${styleMap({
               clipPath: isRtl ? `inset(0 0 0 ${100 - this.position}%)` : `inset(0 ${100 - this.position}% 0 0)`
             })}
-          ></slot>
+          >
+            <slot name="after"></slot>
+          </div>
         </div>
 
         <div
@@ -129,8 +132,7 @@ export default class SlImageComparer extends ShoelaceElement {
           @mousedown=${this.handleDrag}
           @touchstart=${this.handleDrag}
         >
-          <slot
-            name="handle"
+          <div
             part="handle"
             class="image-comparer__handle"
             role="scrollbar"
@@ -140,8 +142,10 @@ export default class SlImageComparer extends ShoelaceElement {
             aria-controls="image-comparer"
             tabindex="0"
           >
-            <sl-icon library="system" name="grip-vertical"></sl-icon>
-          </slot>
+            <slot name="handle">
+              <sl-icon library="system" name="grip-vertical"></sl-icon>
+            </slot>
+          </div>
         </div>
       </div>
     `;

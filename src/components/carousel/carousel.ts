@@ -1,18 +1,18 @@
-import '../icon/icon';
-import { AutoplayController } from './autoplay-controller';
-import { clamp } from 'src/internal/math';
+import '../icon/icon.js';
+import { AutoplayController } from './autoplay-controller.js';
+import { clamp } from '../../internal/math.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { html } from 'lit';
-import { LocalizeController } from '@shoelace-style/localize';
+import { LocalizeController } from '../../utilities/localize.js';
 import { map } from 'lit/directives/map.js';
-import { prefersReducedMotion } from '../../internal/animate';
+import { prefersReducedMotion } from '../../internal/animate.js';
 import { range } from 'lit/directives/range.js';
-import { ScrollController } from './scroll-controller';
-import { watch } from '../../internal/watch';
-import ShoelaceElement from '../../internal/shoelace-element';
-import SlCarouselItem from '../carousel-item/carousel-item';
-import styles from './carousel.styles';
+import { ScrollController } from './scroll-controller.js';
+import { watch } from '../../internal/watch.js';
+import ShoelaceElement from '../../internal/shoelace-element.js';
+import SlCarouselItem from '../carousel-item/carousel-item.js';
+import styles from './carousel.styles.js';
 import type { CSSResultGroup } from 'lit';
 
 /**
@@ -132,7 +132,7 @@ export default class SlCarousel extends ShoelaceElement {
 
   protected firstUpdated(): void {
     this.initializeSlides();
-    this.mutationObserver = new MutationObserver(this.handleSlotChange.bind(this));
+    this.mutationObserver = new MutationObserver(this.handleSlotChange);
     this.mutationObserver.observe(this, { childList: true, subtree: false });
   }
 
@@ -141,7 +141,7 @@ export default class SlCarousel extends ShoelaceElement {
   }
 
   private getCurrentPage() {
-    return Math.floor(this.activeSlide / this.slidesPerPage);
+    return Math.ceil(this.activeSlide / this.slidesPerPage);
   }
 
   private getSlides({ excludeClones = true }: { excludeClones?: boolean } = {}) {
@@ -211,7 +211,7 @@ export default class SlCarousel extends ShoelaceElement {
     }
   }
 
-  private handleSlotChange(mutations: MutationRecord[]) {
+  private handleSlotChange = (mutations: MutationRecord[]) => {
     const needsInitialization = mutations.some(mutation =>
       [...mutation.addedNodes, ...mutation.removedNodes].some(
         node => SlCarouselItem.isCarouselItem(node) && !(node as HTMLElement).hasAttribute('data-clone')
@@ -223,7 +223,7 @@ export default class SlCarousel extends ShoelaceElement {
       this.initializeSlides();
     }
     this.requestUpdate();
-  }
+  };
 
   @watch('loop', { waitUntilFirstUpdate: true })
   @watch('slidesPerPage', { waitUntilFirstUpdate: true })
@@ -325,7 +325,15 @@ export default class SlCarousel extends ShoelaceElement {
    * @param behavior - The behavior used for scrolling.
    */
   previous(behavior: ScrollBehavior = 'smooth') {
-    this.goToSlide(this.activeSlide - this.slidesPerMove, behavior);
+    let previousIndex = this.activeSlide || this.activeSlide - this.slidesPerMove;
+    let canSnap = false;
+
+    while (!canSnap && previousIndex > 0) {
+      previousIndex -= 1;
+      canSnap = Math.abs(previousIndex - this.slidesPerMove) % this.slidesPerMove === 0;
+    }
+
+    this.goToSlide(previousIndex, behavior);
   }
 
   /**

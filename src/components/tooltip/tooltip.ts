@@ -1,16 +1,16 @@
-import '../popup/popup';
-import { animateTo, parseDuration, stopAnimations } from '../../internal/animate';
+import '../popup/popup.js';
+import { animateTo, parseDuration, stopAnimations } from '../../internal/animate.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { customElement, property, query } from 'lit/decorators.js';
-import { getAnimation, setDefaultAnimation } from '../../utilities/animation-registry';
+import { getAnimation, setDefaultAnimation } from '../../utilities/animation-registry.js';
 import { html } from 'lit';
-import { LocalizeController } from '../../utilities/localize';
-import { waitForEvent } from '../../internal/event';
-import { watch } from '../../internal/watch';
-import ShoelaceElement from '../../internal/shoelace-element';
-import styles from './tooltip.styles';
+import { LocalizeController } from '../../utilities/localize.js';
+import { waitForEvent } from '../../internal/event.js';
+import { watch } from '../../internal/watch.js';
+import ShoelaceElement from '../../internal/shoelace-element.js';
+import styles from './tooltip.styles.js';
 import type { CSSResultGroup } from 'lit';
-import type SlPopup from '../popup/popup';
+import type SlPopup from '../popup/popup.js';
 
 /**
  * @summary Tooltips display additional information based on a specific action.
@@ -98,23 +98,20 @@ export default class SlTooltip extends ShoelaceElement {
    */
   @property({ type: Boolean }) hoist = false;
 
+  constructor() {
+    super();
+    // TODO (justinfagnani): does this need to be done in firstUpdated for some
+    // reason? If so, document why in a comment.
+    this.addEventListener('blur', this.handleBlur, true);
+    this.addEventListener('focus', this.handleFocus, true);
+    this.addEventListener('click', this.handleClick);
+    this.addEventListener('keydown', this.handleKeyDown);
+    this.addEventListener('mouseover', this.handleMouseOver);
+    this.addEventListener('mouseout', this.handleMouseOut);
+  }
+
   connectedCallback() {
     super.connectedCallback();
-    this.handleBlur = this.handleBlur.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-    this.handleFocus = this.handleFocus.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleMouseOver = this.handleMouseOver.bind(this);
-    this.handleMouseOut = this.handleMouseOut.bind(this);
-
-    this.updateComplete.then(() => {
-      this.addEventListener('blur', this.handleBlur, true);
-      this.addEventListener('focus', this.handleFocus, true);
-      this.addEventListener('click', this.handleClick);
-      this.addEventListener('keydown', this.handleKeyDown);
-      this.addEventListener('mouseover', this.handleMouseOver);
-      this.addEventListener('mouseout', this.handleMouseOut);
-    });
   }
 
   firstUpdated() {
@@ -127,23 +124,13 @@ export default class SlTooltip extends ShoelaceElement {
     }
   }
 
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this.removeEventListener('blur', this.handleBlur, true);
-    this.removeEventListener('focus', this.handleFocus, true);
-    this.removeEventListener('click', this.handleClick);
-    this.removeEventListener('keydown', this.handleKeyDown);
-    this.removeEventListener('mouseover', this.handleMouseOver);
-    this.removeEventListener('mouseout', this.handleMouseOut);
-  }
-
-  private handleBlur() {
+  private handleBlur = () => {
     if (this.hasTrigger('focus')) {
       this.hide();
     }
-  }
+  };
 
-  private handleClick() {
+  private handleClick = () => {
     if (this.hasTrigger('click')) {
       if (this.open) {
         this.hide();
@@ -151,37 +138,37 @@ export default class SlTooltip extends ShoelaceElement {
         this.show();
       }
     }
-  }
+  };
 
-  private handleFocus() {
+  private handleFocus = () => {
     if (this.hasTrigger('focus')) {
       this.show();
     }
-  }
+  };
 
-  private handleKeyDown(event: KeyboardEvent) {
+  private handleKeyDown = (event: KeyboardEvent) => {
     // Pressing escape when the target element has focus should dismiss the tooltip
     if (this.open && event.key === 'Escape') {
       event.stopPropagation();
       this.hide();
     }
-  }
+  };
 
-  private handleMouseOver() {
+  private handleMouseOver = () => {
     if (this.hasTrigger('hover')) {
       const delay = parseDuration(getComputedStyle(this).getPropertyValue('--show-delay'));
       clearTimeout(this.hoverTimeout);
       this.hoverTimeout = window.setTimeout(() => this.show(), delay);
     }
-  }
+  };
 
-  private handleMouseOut() {
+  private handleMouseOut = () => {
     if (this.hasTrigger('hover')) {
       const delay = parseDuration(getComputedStyle(this).getPropertyValue('--hide-delay'));
       clearTimeout(this.hoverTimeout);
       this.hoverTimeout = window.setTimeout(() => this.hide(), delay);
     }
-  }
+  };
 
   private hasTrigger(triggerType: string) {
     const triggers = this.trigger.split(' ');
@@ -254,6 +241,12 @@ export default class SlTooltip extends ShoelaceElement {
     return waitForEvent(this, 'sl-after-hide');
   }
 
+  //
+  // NOTE: Tooltip is a bit unique in that we're using aria-live instead of aria-labelledby to trick screen readers into
+  // announcing the content. It works really well, but it violates an accessibility rule. We're also adding the
+  // aria-describedby attribute to a slot, which is required by <sl-popup> to correctly locate the first assigned
+  // element, otherwise positioning is incorrect.
+  //
   render() {
     return html`
       <sl-popup
@@ -274,18 +267,13 @@ export default class SlTooltip extends ShoelaceElement {
         shift
         arrow
       >
+        ${'' /* eslint-disable-next-line lit-a11y/no-aria-slot */}
         <slot slot="anchor" aria-describedby="tooltip"></slot>
 
-        <slot
-          name="content"
-          part="body"
-          id="tooltip"
-          class="tooltip__body"
-          role="tooltip"
-          aria-live=${this.open ? 'polite' : 'off'}
-        >
-          ${this.content}
-        </slot>
+        ${'' /* eslint-disable-next-line lit-a11y/accessible-name */}
+        <div part="body" id="tooltip" class="tooltip__body" role="tooltip" aria-live=${this.open ? 'polite' : 'off'}>
+          <slot name="content">${this.content}</slot>
+        </div>
       </sl-popup>
     `;
   }
